@@ -15,7 +15,7 @@ import java.util.*;
 public class RrbScraper {
 
     static final String DOWNLOAD_FOLDER = "downloads";
-    static final String CSV_FILE = "rrb_data.csv";
+    static final String CSV_FILE = "rrb_data.csv"; // csv: Especially for Ralph since he's a big fan of the state of the art format.
 
     public static void main(String[] args) {
         int startYear = 2003;
