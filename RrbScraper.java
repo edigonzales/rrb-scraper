@@ -14,14 +14,14 @@ import java.util.*;
 
 public class RrbScraper {
 
-    static final String DOWNLOAD_FOLDER = "downloads";
+    static final String DOWNLOAD_FOLDER = "/Volumes/T7/downloads";
     static final String CSV_FILE = "rrb_data.csv"; 
 
     public static void main(String[] args) {
         int startYear = 2003;
-        int endYear = 2003;   // use full range after testing
+        int endYear = 2025;   // use full range after testing 2025
         int startNumber = 1;
-        int endNumber = 10;   // use full range after testing
+        int endNumber = 4000;   // use full range after testing 4000
 
         new File(DOWNLOAD_FOLDER).mkdirs();
 
@@ -116,4 +116,36 @@ public class RrbScraper {
         }
         System.out.println("📥 Downloaded: " + file.getAbsolutePath());
     }
+
+    private static void downloadFile2(String fileUrl, File file) {
+        final int maxRetries = 3;
+        int attempt = 0;
+        boolean success = false;
+    
+        while (attempt < maxRetries && !success) {
+            attempt++;
+            try (BufferedInputStream in = new BufferedInputStream(new URL(fileUrl).openStream());
+                 FileOutputStream out = new FileOutputStream(file)) {
+    
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = in.read(buffer, 0, 1024)) != -1) {
+                    out.write(buffer, 0, len);
+                }
+    
+                success = true; // Success!
+            } catch (IOException e) {
+                System.err.println("❌ Attempt " + attempt + " failed to download: " + fileUrl + " -> " + e.getMessage());
+                if (attempt < maxRetries) {
+                    try {
+                        Thread.sleep(500); // small delay before retry
+                    } catch (InterruptedException ignored) {}
+                } else {
+                    System.err.println("❌ Giving up on: " + fileUrl);
+                }
+            }
+        }
+        System.out.println("📥 Downloaded: " + file.getAbsolutePath());
+    }
+    
 }
